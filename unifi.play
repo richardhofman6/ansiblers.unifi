@@ -1,0 +1,54 @@
+---
+
+- hosts: unifi_controllers
+  vars:
+    - unifi_zip_file: UniFi.zip
+    - unifi_zip_dest: /usr/local/src/UniFi.zip
+    - unifi_prefix: /opt
+    - unifi_uid: unifi
+    - unifi_gid: unifi
+    - ntp_server: pool.ntp.org
+  sudo: yes
+  tasks:
+
+    - name: check os is ok
+      when: ansible_os_family != "RedHat"
+      fail: "msg={{ansible_os_family}} is not supported by this playbook"
+
+    - name: install java and mongodb
+      when: ansible_os_family == "RedHat"
+      yum: name={{ item }} state=present
+      with_items:
+        - java-1.7.0-openjdk
+        - jakarta-commons-daemon-jsvc
+        - mongodb-server
+
+    - name: ensure mongod is running
+      service: name=mongod enabled=yes state=started
+
+    - name: setup unifi group
+      group: name={{ unifi_gid }} system=yes state=present
+
+    - name: setup unifi user
+      user: name={{ unifi_uid }} home={{ unifi_prefix }}/UniFi createhome=no shell=/sbin/nologin system=yes state=present
+
+    - name: copy unifi zipball to host
+      copy: src={{ unifi_zip_file }} dest={{ unifi_zip_dest }}
+
+    - name: extract unifi
+      command: /usr/bin/unzip -f -o {{ unifi_zip_dest }} -d {{ unifi_prefix }}
+
+    - name: fix permissions
+      command: /bin/chown -R {{ unifi_uid }}:{{ unifi_gid }} {{ unifi_prefix }}/UniFi
+
+    - name: symlink mongod binary to where unifi path
+      file: src=/usr/bin/mongod dest={{ unifi_prefix }}/UniFi/bin/mongod state=link
+
+    - name: install custom config.properties
+      template: src=config.properties dest={{ unifi_prefix }}/UniFi/data/config.properties owner={{ unifi_uid }} group={{ unifi_gid }}
+
+    - name: install init script
+      copy: src=unifi.init dest=/etc/init.d/unifi owner=root group=root mode=755
+
+    - name: start unifi service
+      service: name=unifi enabled=yes state=started
