@@ -7,13 +7,14 @@ Access Points on RHEL 6
 
 ## Requirements
 
-You need the EPEL Repository from Fedora Project enabled to be able to
-install the requirements (MongoDB etc).
+You need the [EPEL Repository](https://fedoraproject.org/wiki/EPEL) from
+Fedora Project enabled to be able to install the requirements (MongoDB etc):
 
 ## Usage
 
-You must download the ZIP of the UniFi Controller software from the Ubiquiti
-website and save it to the same folder as the playbook as "UniFi.zip"
+Ubiquiti's license does not allow redistribution of the software ZIP, so you
+must manually download the ZIP of the UniFi Controller software from the
+Ubiquiti website and save it to the same folder as the playbook as "UniFi.zip"
 
 Optionally, update the playbook variable 'ntp_server' to point to your
 preferred NTP server for the AP's to use.
