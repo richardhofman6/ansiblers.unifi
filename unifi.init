@@ -12,7 +12,7 @@ MAINCLASS="com.ubnt.ace.Launcher"
 PIDFILE="/var/run/${NAME}/${NAME}.pid"
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
-JAVA_HOME=/usr/lib/jvm/java-6-openjdk
+JAVA_HOME="{{ java_home }}"
 # JSVC - for running java apps as services
 JSVC=`which jsvc`
 #JSVC_OPTS="-debug"
@@ -20,7 +20,6 @@ JSVC_OPTS="${JSVC_OPTS}\
    -home ${JAVA_HOME} \
    -cp /usr/share/java/commons-daemon.jar:${BASEDIR}/lib/ace.jar \
    -pidfile ${PIDFILE} \
-   -procname ${NAME} \
    -outfile SYSLOG \
    -errfile SYSLOG \
    -Djava.awt.headless=true -Xmx1024M"
