@@ -6,13 +6,13 @@
 NAME="unifi"
 DESC="Ubiquiti UniFi Controller"
 
-BASEDIR="{{unifi_prefix}}/UniFi"
+BASEDIR="{{ unifi_controller_rhel.unifi_prefix }}/UniFi"
 MAINCLASS="com.ubnt.ace.Launcher"
 
 PIDFILE="/var/run/${NAME}/${NAME}.pid"
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
-JAVA_HOME="{{ java_home }}"
+JAVA_HOME="{{ unifi_controller_rhel.java_home }}"
 # JSVC - for running java apps as services
 JSVC=`which jsvc`
 #JSVC_OPTS="-debug"
