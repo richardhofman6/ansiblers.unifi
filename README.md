@@ -1,7 +1,9 @@
-UniFi Controller for RedHat/Centos/etc
-======================================
+UniFi Controller for RHEL (yum-based distros)
+=============================================
 
-Ansible Galaxy role for installing UniFi Controller software for Ubiquiti Access Points on RHEL 6.
+Ansible Galaxy role for installing UniFi Controller software for Ubiquiti Access Points on RedHat/Centos/Amazon/Fedora and other yum-based distros.
+
+**WARNING: This has only been tested on Amazon Linux so far, and may have issues in `/etc/yum.repos.d/mongodb-org-3.2.repo` for Fedora (probably need to use the /redhat/ mongo repo.) If you install this on any other distro besides Amazon Linux please comment with your experiences.**
 
 Forked from https://github.com/fukawi2/unifi-controller-rhel and modified to be an includable role via Galaxy instead of a playbook.
 
@@ -10,6 +12,7 @@ Requirements
 
 - You need the [EPEL Repository](https://fedoraproject.org/wiki/EPEL) from Fedora Project enabled to be able to install the requirements (MongoDB etc)
 - Ubiquiti's license does not allow redistribution of the software ZIP, so you must manually download the ZIP of the UniFi Controller software from the [Ubiquiti website](https://www.ubnt.com/download/unifi/) and save it to `files/UniFi.unix.zip`. The most recent tested version is "UniFi v5.0.6 Zip for DIY Unix/Linux" from 2016-06-01. If you are including this role via Galaxy, you may download this file to your playbook's `files` directory instead of this role's `files` directory; both will work.
+
 
 Role Variables
 --------------
