@@ -1,68 +1,53 @@
 #!/bin/bash
 # chkconfig: 2345 95 20
 # description: UniFi system
-# processname: unifi
+# processname: UniFi
 
-NAME="unifi"
-DESC="Ubiquiti UniFi Controller"
-
-BASEDIR="{{ unifi_controller_rhel.unifi_prefix }}/UniFi"
-MAINCLASS="com.ubnt.ace.Launcher"
-
-PIDFILE="/var/run/${NAME}/${NAME}.pid"
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-
-JAVA_HOME="{{ unifi_controller_rhel.java_home }}"
-# JSVC - for running java apps as services
-JSVC=`which jsvc`
-#JSVC_OPTS="-debug"
-JSVC_OPTS="${JSVC_OPTS}\
-   -home ${JAVA_HOME} \
-   -cp /usr/share/java/commons-daemon.jar:${BASEDIR}/lib/ace.jar \
-   -pidfile ${PIDFILE} \
-   -outfile SYSLOG \
-   -errfile SYSLOG \
-   -Djava.awt.headless=true -Xmx1024M"
-
-# Source function library.
-. /etc/init.d/functions
-
-[ -d /var/run/${NAME} ] || mkdir -p /var/run/${NAME}
-cd ${BASEDIR}
-
-ctrl_start() {
-  ${JSVC} ${JSVC_OPTS} ${MAINCLASS} start
+ctrl_start()
+{
+java -jar {{ unifi_controller_rhel_unifi_prefix }}/UniFi/lib/ace.jar start &
 }
 
-ctrl_stop() {
-  ${JSVC} ${JSVC_OPTS} ${MAINCLASS} stop
+
+ctrl_stop()
+{
+java -jar {{ unifi_controller_rhel_unifi_prefix }}/UniFi/lib/ace.jar stop &
 }
 
-ctrl_restart() {
-  ctrl_stop
-  sleep 3
-  ctrl_start
+ctrl_restart()
+{
+ctrl_stop
+sleep 1
+ctrl_start
 }
 
 case "$1" in
-start)
-  echo -n "starting UniFi system ..."
-  ctrl_start
-  echo " service started"
-  ;;
-stop)
-  echo -n "stopping UniFi system ..."
-  ctrl_stop
-  echo " service stopped"
-  ;;
-restart)
-  echo -n "restarting UniFi system ..."
-  ctrl_restart
-  echo "service restarted"
-  ;;
-*)
-  echo "usage: service unifi {start|stop|restart}"
-  ;;
-esac
 
+start)
+
+echo -n "starting UniFi system"
+ctrl_start
+echo " service started"
+;;
+
+stop)
+
+echo -n "stopping UniFi system"
+ctrl_stop
+echo " service stopped"
+;;
+
+restart)
+
+echo -n "restarting UniFi system"
+ctrl_restart
+echo "service restarted"
+;;
+
+*)
+
+echo "usage: service UniFi {start|stop|restart}"
+;;
+
+esac
 exit 0

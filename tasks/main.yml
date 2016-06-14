@@ -3,7 +3,10 @@
 
 - name: abort if os is not suitable
   when: ansible_os_family != "RedHat"
-  fail: "msg={{ansible_os_family}} is not supported by this playbook"
+  fail: msg="{{ansible_os_family}} is not supported by this playbook"
+
+- name: create mongo repository
+  template: src=mongodb-org-3.2.repo.j2 dest=/etc/yum.repos.d/mongodb-org-3.2.repo owner=root group=root
 
 - name: install java and mongodb
   when: ansible_os_family == "RedHat"
@@ -11,34 +14,37 @@
   with_items:
     - java-1.6.0-openjdk
     - jakarta-commons-daemon-jsvc
-    - mongodb-server
+    - mongodb-org
 
 - name: no need for the standard mongod service
   service: name=mongod enabled=no state=stopped
 
 - name: setup unifi group
-  group: name={{ unifi_controller_rhel.unifi_gid }} system=yes state=present
+  group: name={{ unifi_controller_rhel_unifi_gid }} system=yes state=present
 
 - name: setup unifi user
-  user: name={{ unifi_controller_rhel.unifi_uid }} home={{ unifi_controller_rhel.unifi_prefix }}/UniFi createhome=no shell=/sbin/nologin system=yes state=present
+  user: name={{ unifi_controller_rhel_unifi_uid }} home={{ unifi_controller_rhel_unifi_prefix }}/UniFi createhome=no shell=/sbin/nologin system=yes state=present
 
 - name: copy unifi zipball to host
-  copy: src={{ unifi_controller_rhel.unifi_zip_file }} dest={{ unifi_controller_rhel.unifi_zip_dest }}
+  copy: src={{ unifi_controller_rhel_unifi_zip_file }} dest={{ unifi_controller_rhel_unifi_zip_dest }} force=no
 
 - name: extract unifi
-  command: /usr/bin/unzip -o {{ unifi_controller_rhel.unifi_zip_dest }} -d {{ unifi_controller_rhel.unifi_prefix }} creates=/opt/UniFi
+  command: /usr/bin/unzip -o {{ unifi_controller_rhel_unifi_zip_dest }} -d {{ unifi_controller_rhel_unifi_prefix }} creates={{ unifi_controller_rhel_unifi_prefix }}/UniFi
+
+- name: create unifi data directory
+  file: dest={{ unifi_controller_rhel_unifi_prefix }}/UniFi/data state=directory
 
 - name: fix permissions
-  command: /bin/chown -R {{ unifi_controller_rhel.unifi_uid }}:{{ unifi_controller_rhel.unifi_gid }} {{ unifi_controller_rhel.unifi_prefix }}/UniFi
+  command: /bin/chown -R {{ unifi_controller_rhel_unifi_uid }}:{{ unifi_controller_rhel_unifi_gid }} {{ unifi_controller_rhel_unifi_prefix }}/UniFi
 
 - name: symlink mongod binary to where unifi path
-  file: src=/usr/bin/mongod dest={{ unifi_controller_rhel.unifi_prefix }}/UniFi/bin/mongod state=link
+  file: src=/usr/bin/mongod dest={{ unifi_controller_rhel_unifi_prefix }}/UniFi/bin/mongod state=link
 
 - name: install custom config.properties
-  template: src=config.properties.j2 dest={{ unifi_controller_rhel.unifi_prefix }}/UniFi/data/config.properties owner={{ unifi_controller_rhel.unifi_uid }} group={{ unifi_controller_rhel.unifi_gid }}
+  template: src=config.properties.j2 dest={{ unifi_controller_rhel_unifi_prefix }}/UniFi/data/config.properties owner={{ unifi_controller_rhel_unifi_uid }} group={{ unifi_controller_rhel_unifi_gid }}
 
 - name: install init script
-  template: src=unifi.init.j2 dest=/etc/init.d/unifi owner=root group=root mode=755
+  template: src=unifi.init.j2 dest=/etc/init.d/UniFi owner=root group=root mode=755
 
 - name: start unifi service
-  service: name=unifi enabled=yes state=started
+  service: name=UniFi enabled=yes state=started
