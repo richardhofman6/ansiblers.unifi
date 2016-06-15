@@ -1,9 +1,12 @@
 ---
 # vars file for unifi_controller_rhel
+unifi_controller_rhel_java_home: /usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64
 unifi_controller_rhel_ntp_server: pool.ntp.org
-unifi_controller_rhel_unifi_zip_file: UniFi.unix.zip
-unifi_controller_rhel_unifi_zip_dest: /usr/local/src/UniFi.zip
+unifi_controller_rhel_ssl_bundle: ~
+unifi_controller_rhel_ssl_cert: ~
+unifi_controller_rhel_ssl_key: ~
+unifi_controller_rhel_unifi_gid: unifi
 unifi_controller_rhel_unifi_prefix: /opt
 unifi_controller_rhel_unifi_uid: unifi
-unifi_controller_rhel_unifi_gid: unifi
-unifi_controller_rhel_java_home: /usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64
+unifi_controller_rhel_unifi_zip_dest: /usr/local/src/UniFi.zip
+unifi_controller_rhel_unifi_zip_file: UniFi.unix.zip

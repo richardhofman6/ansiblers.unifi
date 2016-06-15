@@ -45,5 +45,25 @@
 - name: install init script
   template: src=unifi.init.j2 dest=/etc/init.d/UniFi owner=root group=root mode=755
 
+- name: copy ssl cert
+  when: not (unifi_controller_rhel_ssl_cert is none)
+  copy: src={{ unifi_controller_rhel_ssl_cert }} dest=/root/cert.crt force=no
+
+- name: copy ssl key
+  when: not (unifi_controller_rhel_ssl_key is none)
+  copy: src={{ unifi_controller_rhel_ssl_key }} dest=/root/key.crt force=no
+
+- name: copy ssl bundle
+  when: not (unifi_controller_rhel_ssl_bundle is none)
+  copy: src={{ unifi_controller_rhel_ssl_bundle }} dest=/root/bundle.crt force=no
+
+- name: convert ssl cert to pkcs12 format
+  when: not (unifi_controller_rhel_ssl_cert is none or unifi_controller_rhel_ssl_key is none or unifi_controller_rhel_ssl_bundle is none)
+  shell: openssl pkcs12 -export -in /root/cert.crt -inkey /root/key.crt -out /root/unifi.p12 -name unifi -CAfile /root/bundle.crt -caname root creates=/root/unifi.p12
+
+- name: convert ssl cert to keystore
+  when: not (unifi_controller_rhel_ssl_cert is none or unifi_controller_rhel_ssl_key is none or unifi_controller_rhel_ssl_bundle is none)
+  shell: keytool -importkeystore -deststorepass aircontrolenterprise -destkeypass aircontrolenterprise -destkeystore {{ unifi_controller_rhel_unifi_prefix }}/UniFi/data/keystore -srckeystore /root/unifi.p12 -srcstoretype PKCS12 -srcstorepass aircontrolenterprise -alias unifi creates={{ unifi_controller_rhel_unifi_prefix }}/UniFi/data/keystore
+
 - name: start unifi service
   service: name=UniFi enabled=yes state=started

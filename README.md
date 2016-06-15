@@ -10,7 +10,7 @@ Forked from https://github.com/fukawi2/unifi-controller-rhel and modified to be 
 Requirements
 ------------
 
-- Ubiquiti's license does not allow redistribution of the software ZIP, so you must manually download the ZIP of the UniFi Controller software from the [Ubiquiti website](https://www.ubnt.com/download/unifi/) and save it to `files/UniFi.unix.zip`. The most recent tested version is "UniFi v5.0.6 Zip for DIY Unix/Linux" from 2016-06-01. If you are including this role via Galaxy, you may download this file to your playbook's `files` directory instead of this role's `files` directory; both will work.
+- Ubiquiti's license does not allow redistribution of the software ZIP, so you must manually download the ZIP of the UniFi Controller software from the [Ubiquiti website](https://www.ubnt.com/download/unifi/) and save it to `files/UniFi.unix.zip`. The most recent tested version is "UniFi v5.0.6 Zip for DIY Unix/Linux" from 2016-06-01. If you are including this role via Galaxy, you may download this file to your playbook's `files` directory instead of this role's `files` directory; you may also download to an arbitrary folder in your playbook and specify the relative path in the variable.
 - You may need the [EPEL Repository](https://fedoraproject.org/wiki/EPEL) from Fedora Project enabled for some packages, however Mongo is installed directly from mongo.org so try running without first.
 
 
@@ -18,7 +18,10 @@ Role Variables
 --------------
 
 - **unifi_controller_rhel_ntp_server** (optional) sets your preferred NTP server for the UniFi APs to use (default: `pool.ntp.org`)
-- **unifi_controller_rhel_unifi_zip_file** (optional) sets the filename of the UniFi controller software on the Ansible system (default: `UniFi.unix.zip`)
+- **unifi_controller_rhel_ssl_bundle** (optional) provides an alternate SSL CA certificate bundle/chain for the Controller to use. (default: none)
+- **unifi_controller_rhel_ssl_cert** (optional) provides an alternate SSL certificate for the Controller to use. (default: none)
+- **unifi_controller_rhel_ssl_key** (optional) provides an alternate SSL key for the Controller to use. (default: none)
+- **unifi_controller_rhel_unifi_zip_file** (optional) sets the filename of the UniFi controller software on the Ansible system, can be a path relative to your playbook like `roles/my_other_role/downloads/Unifi.unix.zip` (default: `UniFi.unix.zip`)
 
 Dependencies
 ------------
