@@ -59,11 +59,11 @@
 
 - name: convert ssl cert to pkcs12 format
   when: not (unifi_controller_rhel_ssl_cert is none or unifi_controller_rhel_ssl_key is none or unifi_controller_rhel_ssl_bundle is none)
-  shell: openssl pkcs12 -export -in /root/cert.crt -inkey /root/key.crt -out /root/unifi.p12 -name unifi -CAfile /root/bundle.crt -caname root creates=/root/unifi.p12
+  shell: openssl pkcs12 -export -in /root/cert.crt -inkey /root/key.crt -out /root/unifi.p12 -name unifi -CAfile /root/bundle.crt -caname root -password pass:aircontrolenterprise
 
 - name: convert ssl cert to keystore
   when: not (unifi_controller_rhel_ssl_cert is none or unifi_controller_rhel_ssl_key is none or unifi_controller_rhel_ssl_bundle is none)
-  shell: keytool -importkeystore -deststorepass aircontrolenterprise -destkeypass aircontrolenterprise -destkeystore {{ unifi_controller_rhel_unifi_prefix }}/UniFi/data/keystore -srckeystore /root/unifi.p12 -srcstoretype PKCS12 -srcstorepass aircontrolenterprise -alias unifi creates={{ unifi_controller_rhel_unifi_prefix }}/UniFi/data/keystore
+  shell: keytool -importkeystore -deststorepass aircontrolenterprise -destkeypass aircontrolenterprise -destkeystore {{ unifi_controller_rhel_unifi_prefix }}/UniFi/data/keystore -srckeystore /root/unifi.p12 -srcstoretype PKCS12 -srcstorepass aircontrolenterprise -alias unifi -noprompt
 
 - name: start unifi service
   service: name=UniFi enabled=yes state=started
