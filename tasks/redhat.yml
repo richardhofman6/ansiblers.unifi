@@ -1,0 +1,12 @@
+- name: create mongo repository
+  template: src=mongodb-org-3.2.repo.j2 dest=/etc/yum.repos.d/mongodb-org-3.2.repo owner=root group=root
+
+- name: install java and mongodb
+  when: ansible_os_family == "RedHat"
+  yum: name={{ item }} state=present
+  with_items:
+    - java-1.7.0-openjdk
+    - mongodb-org
+
+- name: no need for the standard mongod service
+  service: name=mongod enabled=no state=stopped

@@ -1,0 +1,38 @@
+- name: keys
+  apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id={{ item }}
+  with_items:
+    - C0A52C50
+    - 7F0CEB10
+  become: yes
+
+- lineinfile:
+    dest=/etc/apt/sources.list.d/ubnt.list
+    line="deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti"
+    create=yes
+  become: yes
+
+- shell: "type -p javac|xargs readlink -f|xargs dirname|xargs dirname"
+  args:
+    executable: /bin/bash
+  register: java_home
+
+- name: configure JAVA_HOME in /etc/default/unifi
+  lineinfile:
+    dest=/etc/default/unifi
+    line="JAVA_HOME={{ java_home.stdout }}"
+    create=yes
+  become: yes
+
+- apt:
+    name=unifi
+    update_cache=yes
+    state=latest
+
+- name: unifi service should run
+  service: name={{ item}} enabled=yes state=started
+  with_items:
+  - unifi
+  - mongodb
+
+# - name: no need for the standard mongod service
+#   service: name=mongodb enabled=no state=stopped

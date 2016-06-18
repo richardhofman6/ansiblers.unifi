@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: zyphlar
-  description: UniFi Controller for RedHat/Centos/etc
+  description: UniFi Controller
   company: Zyphon LLC
   license: license (MIT)
   min_ansible_version: 1.2
@@ -13,6 +13,12 @@ galaxy_info:
       versions:
       - all
     - name: Fedora
+      versions:
+      - all
+    - name: Debian
+      versions:
+      - all
+    - name: Ubuntu
       versions:
       - all
   galaxy_tags:
