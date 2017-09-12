@@ -2,9 +2,9 @@
 [mongodb-org-3.2]
 name=MongoDB Repository
 {% if ansible_distribution == "Amazon" %}
-  baseurl=https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/3.2/x86_64/
+baseurl=https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/3.2/x86_64/
 {% else %}
-  baseurl=https://repo.mongodb.org/yum/redhat/{{ ansible_lsb.major_release|int }}/mongodb-org/3.2/x86_64/
+baseurl=https://repo.mongodb.org/yum/redhat/{{ ansible_lsb.major_release|int }}/mongodb-org/3.2/x86_64/
 {% endif %}
 gpgcheck=1
 enabled=1
