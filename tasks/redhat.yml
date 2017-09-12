@@ -1,6 +1,28 @@
 - name: create mongo repository
   template: src=mongodb-org-3.2.repo.j2 dest=/etc/yum.repos.d/mongodb-org-3.2.repo owner=root group=root
 
+- name: open firewall ports (RHEL/CentOS/Fedora 6.X)
+  command: "/usr/sbin/iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 8081
+    - 8080
+    - 8443
+    - 8843
+    - 8880
+    - 27117
+  when: (ansible_distribution_major_version|int <= 6)
+
+- name: open firewall ports (RHEL/CentOS/Fedora 7.X)
+  command: "/usr/bin/firewall-cmd --zone=public --add-port={{ item }}/tcp"
+  with_items:
+    - 8081
+    - 8080
+    - 8443
+    - 8843
+    - 8880
+    - 27117
+  when: (ansible_distribution_major_version|int == 7)
+
 - name: install java and mongodb
   when: ansible_os_family == "RedHat"
   yum: name={{ item }} state=present
